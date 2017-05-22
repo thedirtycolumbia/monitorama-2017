@@ -122,3 +122,64 @@ Google's SRE book prescribes: latency, traffic, errors, saturation.
 Development teams should make their metrics available for others to consume.
 
 Your central monitoring team helps define boundaries and heirarchies that enable communication in larger organizations.
+
+### Yo Dawg: Monitoring Monitoring Systems at Netflix
+_Roy Rapoport (Netflix)_
+
+The Hero's Journey, every myth has common elements.
+
+Figuring out how to monitor monitoring systems is turtles all the way down.
+
+Monitoring is not alerting. Monitoring systems are platform that take a bunch of data and make it available for consumption.
+In short, they take a bunch of data, and they output opinions.
+
+Netflix has a time series database called Atlas. Their alerting service reads from Atlas and sends a request to an action service that then sends a notification to a third-party service like AWS, email, page. Requests are held in an SQS queue. They may also be sent to a stream processing service.
+
+Netflix cares deeply about the query load on Atlas. There is a "hot checker" service that checks on SQS activity. There is also a "cold checker" service that checks the hot checker. Actually, they check on each other.
+
+An Atlas deployment group (ADG) takes incoming metrics via a publish service, that sends metrics to the 6H tier (which stores data for 6 hours) and also sends them to S3. Data will persist through additional 3D (3-day) and 18D (18-day) tier. The short term tiers allow for the map reduce job that moves data into the long-term tiers to fail a few times without dropping data.
+
+Each customer metrics ADG sends metrics to other ADGs (one in each data center) for internal monitoring.
+
+Netflix experiences monitoring system failures every 18-24 months. They've determined this to be an acceptable trade-off.
+
+Starting in May of 2011, Netflix had about 2 million metrics. They now have billions of metrics.
+
+Roy has been at Netflix for about 8 years. A notable theme from this time period is the increasing stability of the system.
+New device launches, new content launches, and adding new countries were all a big deal and have become routine operations.
+
+### Our Many Monsters
+_Megan Anctil (Slack)_
+
+Slack has a small (~5 engineer) visiblity operations team that owns monitoring, alerting, and related infrastructure.
+
+Slack currently stores 30 days of metrics data from 160 hosts. That is 1.5 million metrics/second and 90TB of storage.
+
+Some vendors charge per host, some scale cost by the type of host, others charge per metric stored at 10s resolution.
+
+Megan went over some of the current pricing from vendors. In the best case scenario vendors would charge $450,000/month.
+
+Clients send data through an ELB, that hits a Graphite relay -> Graphite Carbon -> Graphite API <- Grafana.
+
+Carbon Relay and Carbon cache have been replaced with Gocarbon: https://github.com/lomik/go-carbon
+
+Slack uses Grafana with some custom hacks (e.g. metric exploration and ad-hoc graphing features) and custom dashboards.
+
+Lesson learned: not having tags gets pretty hard and the workarounds get worse and worse.
+
+"You cannot aggregate percentiles." Actually, you can, but you should not. The resulting data is janky garbage.
+
+Slack has a fairly standard ELK stack storing 2 weeks of logs (250TB) on 450 nodes with a replication factor of 2.
+
+Best case scenario for sending this data to a vendor: $1.2M/month.
+
+Clients send data through an ELB to a Logstash sink -> ELB -> Logstash -> ES clients.
+
+Structured logging is better. Filter out any unimporting logs. Always be tuning (ABT).
+
+Slack's alerting stack (https://www.icinga.com/) handles 140K services, 6.3K hosts with a max check latency of ~ 3 seconds.
+
+Clients send data to Icinga (nsca-wrapper -> nsca server -> Icinga <- xinetd) <- Thruk (https://www.thruk.org/).
+Slack also uses ThousandEyes and CloudWatch.
+
+Running these open-source solutions has allowed Slack to develop custom features and solve bugs quickly on their own.
