@@ -238,8 +238,48 @@ Netflix needs to know what the internet looks like, not an average, but the full
 Logging anti-patterns: averages can't see the distribution, outliers distorted, 0, negatives, errors, etc.
 Sampling results in missing data, rare events, and problems aren't equal in the population.
 
-Histograms are Guy's favorite aggregation. You can take the IECDF of a histogram, which can then be used to calculate other useful metrics. Unfortunately, the long tail has the same resolution as the rest of the distribution. One solution to this problem is exponenentially spaced buckets which are cheap to compute and result in flat memory use.
+Histograms are Guy's favorite aggregation. You can take the ECDF of a histogram, which can then be used to calculate other useful metrics. Unfortunately, the long tail has the same resolution as the rest of the distribution. One solution to this problem is exponenentially spaced buckets which are cheap to compute and result in flat memory use.
 
 Data is better than opinions. It doesn't really matter what you pick. Architecture is hard. It helps to make measuring cheap in order to be able experiment live, in the wild. It helps to know what "that" is before you engineer around it. Make getting "that" cheap so you can make decisions based on data. Don't guess, measure.
 
 Making a reality lab. Guy played around with tc and network shaping to similate the network provided by major ISPs.
+
+### Monitoring: A Post Mortem
+_Charity Majors (Honeycomb)_
+
+Hates monitoring. Founded Honeycomb (not a monitoring company).
+
+RE: Monitoring is Dead talk by @grepory last year.
+
+There is a seismic shift underway. A large percentage of the talks this year are about how we deal with complex systems.
+
+Build better tools. Think about distributed systems even if you're not build distributed systems. All of the CS work around distributed systems is about complexity and dealing with failure gracefully.
+
+Observability is how we make complex systems tractable.
+
+Metrics and logs were designed for a very different era. Any system with a schema and an index is trying to get you to guess what your data is going to look like. Dashboards are terrible. You cannot pregenerate the right dashboard for every situation where you'll need one. Every time you see a dashboard showing all green it's a lie. We start to believe that if we haven't graphed it, it doesn't exist or doesn't matter. We don't have the detail we need to answer arbitrary questions. Demand more from your tools.
+
+Monitoring is dead. Raw events are the future. Aggregates destroy your precious details.
+
+Quit debugging with your eyeballs and start debugging by asking questions of your data.
+
+Structure raw event data at the source. Logs are just baby events, just give them structure and make them real events. It's useless if it isn't structured. Outliers are the whole damn point. Events carry context and capture causation, both of which make events easier to reason about. Arbitrarily wide events allow you carry more and more context.
+
+You can't hunt for outliers if your tool can't handle outliers.
+
+Unknown-unknowns: engineering problems, open-ended time scale, require creativity
+known-unknowns: support problem, closed time scale, use a dashboard and then automate it out of existence
+
+Prometheus is awesome. It's the latest, best RRDTool that will ever be built, but I don't like that model.
+
+We need tools that allow for exploratory analysis and asking questions.
+
+Watch it run in production. If you're not looking at it when it's normal, you don't know what it looks like when it's normal.
+
+Honeycomb and scuba provided a breadth-first approach. Open tracing provides a depth-first approach.
+
+Debugging is a social experience. Our tools must tap into our sense of joy, play, performance, community, and solidarity.
+
+Cultivate a team of SWEs who value operational excellence.
+
+Observability is TDD for production.
