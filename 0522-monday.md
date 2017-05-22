@@ -226,4 +226,4 @@ perf was used on programs that translate to C functions. You can get JS or Java 
 
 The case of the intermittently (like 5 queries/hour) failing DNS queries. Use tcpdump to save the network requests for later analysis. Analyze the packets with wireshark and see that the problem is timeouts. Increase the timeout threshold.
 
-Read zines. jvns.ca/zines
+Read zines. http://jvns.ca/zines/
