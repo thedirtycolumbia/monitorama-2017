@@ -227,3 +227,19 @@ perf was used on programs that translate to C functions. You can get JS or Java 
 The case of the intermittently (like 5 queries/hour) failing DNS queries. Use tcpdump to save the network requests for later analysis. Analyze the packets with wireshark and see that the problem is timeouts. Increase the timeout threshold.
 
 Read zines. http://jvns.ca/zines/
+
+### Instrumenting SmartTVs and Smartphones in the Netflix app for modeling the Internet
+_Guy Cirino (Netflix)_
+
+Making the internet fast is slow. Going international presented many hurdles for Netflix (e.g. 3G, spotty connections, etc.).
+
+Netflix needs to know what the internet looks like, not an average, but the full distribution.
+
+Logging anti-patterns: averages can't see the distribution, outliers distorted, 0, negatives, errors, etc.
+Sampling results in missing data, rare events, and problems aren't equal in the population.
+
+Histograms are Guy's favorite aggregation. You can take the IECDF of a histogram, which can then be used to calculate other useful metrics. Unfortunately, the long tail has the same resolution as the rest of the distribution. One solution to this problem is exponenentially spaced buckets which are cheap to compute and result in flat memory use.
+
+Data is better than opinions. It doesn't really matter what you pick. Architecture is hard. It helps to make measuring cheap in order to be able experiment live, in the wild. It helps to know what "that" is before you engineer around it. Make getting "that" cheap so you can make decisions based on data. Don't guess, measure.
+
+Making a reality lab. Guy played around with tc and network shaping to similate the network provided by major ISPs.
