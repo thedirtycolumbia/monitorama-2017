@@ -71,3 +71,54 @@ There are a number of large companies that have recently audited their on-call e
 "I'm at GitHub now and my team hasn't been paged in months."
 
 The on-call selfie has built a community. "If it wasn't for the on-call selfie, I would've burned out before I even knew I was on fire."
+
+### Monitoring in the Enterprise
+_Bryan Liles (Capital One)_
+
+Monitoring Things At Your Day Job: A Concise Guide
+
+1. Pick a tool
+2. Monitor things
+3. Bicker about choices
+4. GOTO step 1
+
+"Nothing in the enterprise is concise."
+
+How does your enterprise monitoring team know what to monitor?
+Do they have access to tools?
+Do they know who to notify?
+Do they know what is important?
+How do they know when changes happen?
+
+Whatever they do won't be good enough. So you do it yourself.
+
+What should you alert on? Who should you alert? What tools should you use?
+So many good ones. In an enterprise why not just run all of them since cost is not an issue?
+
+How do you monitor your monitoring tools?
+
+In the enterprise you are a small cog in a big machine competing with everyone for everyone else's attention.
+
+A service level indicator (SLI) is a measurement of some part of your service (e.g. error rate).
+A service level objective (SLO) is a target value for a service measured by an SLI.
+A service level agreement (SLA) is what you promise your customers you'll deliver.
+
+"If you create a log, use a structured log." Logs are useless if they aren't aggregated. Your logs should tell a story.
+
+Metrics are one or more numbers that give details about something. Metrics are often combined to create a time series.
+
+A single request travels through multiple services. Use tracing to track requests and resource use through your entire stack.
+
+Health endpoints allow you to monitor a service. If you have a health endpoint, it should snitch. Have it return useful data.
+
+The enterprise monitoring team monitors all team SLAs.
+They provide a central point of contact for alerts.
+They research tooling and practices for teams.
+
+Whenever you think about about monitoring, start with USE: utilization, saturation, and errors.
+Brendan Gregg gave us RED: rate, error, duration.
+Google's SRE book prescribes: latency, traffic, errors, saturation.
+
+Development teams should make their metrics available for others to consume.
+
+Your central monitoring team helps define boundaries and heirarchies that enable communication in larger organizations.
