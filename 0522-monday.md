@@ -183,3 +183,47 @@ Clients send data to Icinga (nsca-wrapper -> nsca server -> Icinga <- xinetd) <-
 Slack also uses ThousandEyes and CloudWatch.
 
 Running these open-source solutions has allowed Slack to develop custom features and solve bugs quickly on their own.
+
+### Tracing Production Services at Stripe
+_Aditya Mukerjee (Stripe)_
+
+Tracing is about more than HTTP requests.
+
+An intelligent and context-aware metrics pipeline: https://veneur.org
+
+It's possible to extract log data into a histogram, but you don't want to do that at 3am. A lot of log messages are only useful to identify the line of code that is failing. "If you need to look at logs, there's a gap in your system's observability tools." One of those missing tools is probably tracing.
+
+Monitoring, like testing, depends heavily on a developer's ability to predict future failures.
+
+It is a practical observation that the developer's who wrote the code are the best to debug it, and thus should be on-call. We don't this for other types of engineering and we shouldn't do this for software engineering.
+
+Nobody wants to write the code to add tracing around every request because it might be useful for a failure later.
+
+Logs, metrics, and traces are the fundamental particles of monitoring.
+
+The performance requirements for efficiently emitting, storing, and querying logs, metrics, and traces are all different. The implementation details of each should not dictate the interface we emit them to.
+
+A log is a metric with "longer' data. A trace is a metric that allows "inner joins".
+
+Stripe created a standard sensor format (SSF). The pipeline can handle each particle and determine where to send them. Veneur handles the task of converting the data to a format that downstream services or vendors expect.
+
+If your monitoring pipeline goes down you lose visibility. The pipeline needs to be distributed and highly-available. The problem is that not all metric aggregations can be distributed, but you don't want to have a central aggregator node. To avoid this problem, Veneur uses a consistent hashing scheme to send metrics to each node in the cluster.
+
+https://github.com/tdunning/t-digest are a way to recursively calculate approximate percentiles in a distributed fashion.
+
+### Linux debugging tools you'll love
+_Julia Evans (Stripe)_
+
+How I got better a debugging. Remember the bug is happing for a logical reason. Be confident. Know your debugging toolkit.
+
+Be a wizard. Ask your operation system what your programs are doing. Operating systems will tell you the truth while your programs lie to you.
+
+The case of the mystery configuration file. When you write a configuration file, start your program, and it doesn't work. strace lets you trace system calls (like an API for your OS). Unfortunately, strace can make your program run 50x slower. There are some faster system call tracing tools, notably perf trace (Linux), dtruss (OS X), and eBPF based tools like opensnoob (Linux).
+
+The case of the slow program. Part one. Run the time command and find that the program wasn't using the CPU 95% of the time. So it was waiting on something. Use pgrep to find the program's PID. Then cat /proc/${PID}/stack. See that it's waiting on the network. Part two. Use time to find that the command is using a lot of CPU. Run perf top and find which function (in the interpreter) is using the CPU. See that the problem was a regular expression. Part three. Run the time commmand to find that the program is using a lot of CPU (but it's all in the kernel this time). Use dstat to find that the programming is writing to disk a lot, but why is that using a lot of CPU? Run perf top and see that the program is writing to any encrypted directory.
+
+perf was used on programs that translate to C functions. You can get JS or Java (both JIT compiled) to tell perf which functions they are running.
+
+The case of the intermittently (like 5 queries/hour) failing DNS queries. Use tcpdump to save the network requests for later analysis. Analyze the packets with wireshark and see that the problem is timeouts. Increase the timeout threshold.
+
+Read zines. jvns.ca/zines
