@@ -62,3 +62,26 @@ Optimizations:
 http://futuredata.stanford.edu/asap/ (https://github.com/stanford-futuredata/ASAP)
 
 https://github.com/kexinrong
+
+### Monitoring That Cares (The End of User Based Monitoring)
+_François Conil_
+
+We've all missed alerts. It usually happens when you have no backup and it goes straight to your manager.
+
+We all take on-call seriously, the problem is coverage. The dashboard is all green but the site is down.
+
+We monitor because people use our services and we don't want them to catch us with our pants down.
+
+"There's three types of lies: lies, damned lies, and service status pages."
+
+There are three types of broken:
+* It's broken and you don't care.
+* It's broken for them and it's not supposed to work that way (update docs).
+* It's broken and it needs to be fixed (this is where you should get paged).
+
+If you don't know what what to monitor in an application, go back six months in time and talk to the developer early in the development cycle. Don't rush to add alerts on a service before stepping back to think about what's important to the users.
+
+Talk to the product managers and owners, they will understand how the product is used and what is important to users.
+
+"The key to not being woken up by monitoring alerts is to fix the cause for alerts." — someone on the internet, probably.
+
