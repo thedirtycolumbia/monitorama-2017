@@ -140,7 +140,8 @@ Yourkit is great for debugging JVM problems.
 Methodology. How we approach problems. In general: measure, analyze, adjust, verify. Basically, do science.
 
 Start with the easier and/or cheaper options first. Peeling the onion (start outside, work in):
-```( metrics ( tuning ( tracing and logs ( profiling (custom instrumentation or code change```
+
+    ( metrics ( tuning ( tracing and logs ( profiling (custom instrumentation or code change
 
 When to peel
 Make a single change at one layer. Repeat.
