@@ -85,3 +85,47 @@ Talk to the product managers and owners, they will understand how the product is
 
 "The key to not being woken up by monitoring alerts is to fix the cause for alerts." — someone on the internet, probably.
 
+### Consistency in Monitoring with Microservices at Lyft
+_Yann Ramin (Lyft)_
+
+Is an engineering manager at Lyft (previously held that role at Twitter).
+
+"C is still the best programming language."
+
+How to handle production incidents with lots of services and diverse teams.
+
+What are we trying to solve? Scaling operational mindfulness.
+Examples:
+* "I didn't realize it was logging errors all weekend."
+* "The Jenkins build was green so I closed my laptop and walked away."
+
+We approach monitoring as operations. We don't think about it an end-to-end. We need to build in monitoring from the start.
+
+How can we make monitoring easy. Are there ways to absract or modularize it?
+
+Teams are on-call for their services. There is no operations or SRE role per se.
+
+The goal is to make it easy to produce metrics. Lyft uses the statsd protocol.
+
+Lyft's pipeline looks like: github.com/lyft/statsrelay -> github.com/lyft/statsite -> TSDB (Wavefront and an internal thing)
+
+Service level aggregates (histograms) centrally, per host data is processed locally.
+Everything writes at the same time (either at the top of the second or minute) so aggregates are aligned everywhere.
+
+Lyft processes billions of events per second. That turns into only ~200K metrics/second thanks to rollups.
+
+Instrument loggers so that you have metrics by log severity and can easily page somebody if a service logs critical.
+
+Lyft also has Envoy (https://lyft.github.io/envoy/), a layer 7 proxy and communcation bus, which "exposes a multitude of statistics to aid in system visibility and debugging as well as distributed tracing via thirdparty providers."
+
+Lyft also has Orca which is a Salt module that provisions remote resources a service needs during deploy.
+
+They also have an okay Go stats library: https://github.com/lyft/gostats
+
+Using different systems for monitoring is distracting and delays debugging.
+
+In Lyft's central monitoring and alerting hub, dashboards map to Salt states.
+Every service gets a default dashboard with base alarms.
+Services define extra resources they need in a Salt pillar.
+
+We shouldn't expect users to become experts in order to use our monitoring and alerting tools.
