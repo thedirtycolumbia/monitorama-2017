@@ -159,3 +159,34 @@ When the pager goes off, don't create more problems by skipping steps or guessin
 
 Context is helpful. Zipkin and LogLens don't have enough info. Logging needs to be bolstered.
 Finagle (https://github.com/twitter/finagle) is awesome because each service is a function and filters are easy to create.
+
+### Managing Logs with a Serverless Cloud
+_Paul Fisher (Lyft)_
+
+Many of us started with monitoring the monolith: Adding logging to an application. Tailing the logs.
+
+As we scale, we try to stick with logs but scaling log aggreagation, storage, and search is hard.
+
+So instead, we start implementing a stats pipeline.
+Using stats for metrics, tracing for debugging and sampling, and logs for incident triage and text debugging.
+
+Please don't log every single 200 status OK request that your service handles.
+
+Lyft's constraints were: AWS, trying to remain vendor neutral (open source), and trying to maintain stateless infrastucture.
+Lyft's infrastructure scales up and down dynamically depend on load (e.g. more on a Friday night, less on a Sunday morning).
+
+Lyft uses Heka for log shipping. Heka streams data into Kinesis Firehose.
+
+Lambda logging at Lyft is CPU bound. Log fanout happens from S3 to `os.tmpfile()`, and the file is decompressed, parsed into JSON into another `os.tmpfile()` and then on to ElasticSearch. The lambda also talks to SQS and DynamoDB for backfill and rate-limiting, respectively. Bundle names are written to SQS during failure. Service rates are written to a DynamoDB table.
+
+Lyft uses Kibana for searching of the logs stored in ElasticSearch.
+
+Running the ElasticSearch service on AWS requires some additional configuration for security:
+https://aws.amazon.com/blogs/security/how-to-control-access-to-your-amazon-elasticsearch-service-domain/
+
+Lyft uses Yelp's ElastAlert for alerting: https://github.com/Yelp/elastalert
+
+On AWS, it's better to start with a larger ElasticSearch cluser than you need and scale down.
+Lyft's original ES cluster was 10 x r3.8xlarge data nodes. That gave them about 7-10K JSON docs/second of throughput.
+
+Use metrics where you can instead of logs. If you have to use logs, serverless / lambda architecture works pretty well.
