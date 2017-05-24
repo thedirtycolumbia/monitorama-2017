@@ -32,3 +32,33 @@ Make it easy to try things without fear.
 For example, maybe they've made a lot of configuration progress and they don't want to lose all of that.
 "That's how you get tab hoarders."
 Make sure the back button still works. Make sure that your URLs result in a consistent view of the data.
+
+### Automating Dashboard Displays with ASAP (As Smooth As Possible)
+_Kexin Rong (Stanford InfoLab)_
+
+Kexin is currently a PhD student working with Peter Bailis on MacroBase, a system for diagnosing anomalies.
+
+Short-term fluctuations in a plot can obscure long-term trends. Smoothing with a moving average can help with this.
+
+Usage studies have shown that smoothing can lead to 38% more accuracy and 44% faster responses when diagnosing problems.
+
+In many cases, plotting raw data is often noisy and spikes tend to dominate the plot and obscure important fluctuations.
+
+Which smoothing function should be used?
+Moving averages are good. You can control the amount of smoothing by adjusting the window size.
+Signal processing theory tells us that moving averages are good at removing noise.
+
+Point-to-point variance is a way to quantify smoothness. Increase window size to reduce point-to-point variance.
+
+We want to avoid oversmoothing. We can measure the "outlyingness" of a plot to give us a boundary and avoid oversmoothing.
+Luckily there is a statistical function for this metric, the "kurtosis" of a plot measures exactly that.
+Kurtosis tell us when increasing our window size is no longer good if we want to preserve long-term deviations in our plot.
+
+Optimizations:
+* Pre-aggregate according to the available display resolution.
+* Do not update data at the actual arrival date, just fast enough for a human to notice.
+* Only search for window sizes that correspond to high periodicity in the time series.
+
+http://futuredata.stanford.edu/asap/ (https://github.com/stanford-futuredata/ASAP)
+
+https://github.com/kexinrong
