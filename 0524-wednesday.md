@@ -190,3 +190,30 @@ On AWS, it's better to start with a larger ElasticSearch cluser than you need an
 Lyft's original ES cluster was 10 x r3.8xlarge data nodes. That gave them about 7-10K JSON docs/second of throughput.
 
 Use metrics where you can instead of logs. If you have to use logs, serverless / lambda architecture works pretty well.
+
+### Distributed Tracing at Uber Scale: Creating a Treasure Map for your Monitoring Data
+_Yuri Shkuro (Uber)_
+
+Co-founded the OpenTracing initiative. Works on https://uber.github.io/jaeger/ (similar to Zipkin and Dapper)
+
+Would you like some tracing with your monitoring?
+
+Tracing provides features that are orthogonal to other types of observations like events, logs, and metrics.
+
+Tracing is a good source of data when you are working on performance and latency optimization across services.
+It also helps with root cause analysis, service dependency analysis, and propagates context.
+
+If tracing is so awesome, why isn't everyone doing tracing. A show of hands in the room was probably like 5-15%.
+
+Tracing is hard. The instrumentation required is difficult and boring.
+In-process context propagation particularly hard in some languages.
+
+In Golang and Node.js there is no such thing as thread-local storage, so you have to pass a context object explicitly.
+
+"At Google, we require that Go programmers pass a Context parameter as the first argument to every function on the call path between incoming and outgoing requests." via https://blog.golang.org/context
+
+OpenTracing to the rescue! Uber has 2000-3000 microservices. If you want to implement tracing in a large organization, you need to show each team that they want it. The way to do that is to sell the service dependency analysis ability it offers. The other killer feature of distributed tracing is that it allows for the propagation of arbitrary baggage across services.
+
+Example uses for baggage are for tenancy (e.g. set an env at the top and send it all the way down to the DB) and authorization tokens.
+
+OpenTracing: http://opentracing.io
