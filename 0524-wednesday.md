@@ -129,3 +129,32 @@ Every service gets a default dashboard with base alarms.
 Services define extra resources they need in a Salt pillar.
 
 We shouldn't expect users to become experts in order to use our monitoring and alerting tools.
+
+### Critical to Calm: Debugging Distributed Systems
+_Ian Bennett (Twitter)_
+
+Writing around 4.3 billion unique metrics per minute.
+
+Yourkit is great for debugging JVM problems.
+
+Methodology. How we approach problems. In general: measure, analyze, adjust, verify. Basically, do science.
+
+Start with the easier and/or cheaper options first. Peeling the onion (start outside, work in):
+```( metrics ( tuning ( tracing and logs ( profiling (custom instrumentation or code change```
+
+When to peel
+Make a single change at one layer. Repeat.
+Avoid making multiple changes at once and verify you haven't changed behavior.
+Remember to re-rank and prioritize.
+
+Profiling.
+CPU: samples, stack traces, lock/wait analysis
+Memory: heap allocation, GC collection
+Disk: I/O, latency, errors
+
+Performance fixes should be as isolated as possible.
+
+When the pager goes off, don't create more problems by skipping steps or guessing. Your gut can and will be wrong.
+
+Context is helpful. Zipkin and LogLens don't have enough info. Logging needs to be bolstered.
+Finagle (https://github.com/twitter/finagle) is awesome because each service is a function and filters are easy to create.
