@@ -217,3 +217,27 @@ OpenTracing to the rescue! Uber has 2000-3000 microservices. If you want to impl
 Example uses for baggage are for tenancy (e.g. set an env at the top and send it all the way down to the DB) and authorization tokens.
 
 OpenTracing: http://opentracing.io
+
+### Kubernetes-defined Monitoring
+_Gianluca Borello_
+
+Monitoring containers (with a tilt towards Kubernetes).
+
+For that vast majority of small- and medium-sized organizations monitoring looks like: data -> big engine -> shiny dashboard.
+
+* http://www.sysdig.org/
+* https://github.com/draios/sysdig
+
+Things are more complex with containers. Getting the data is harder because workloads are distributed and may be dynamically scheduled across the infrastructure. Troubleshooting is also harder because of the additional layers of abstraction.
+
+Seeing inside of containers is a big pain. Containers are resource isolated, will not have all of the tools you need, etc.
+
+Kubernetes has the concept of pods: groups of containers that will always be scheduled on the same hosts and share resources.
+
+Pods make it easier to deploy a sidekick container that runs your monitoring tools.
+
+Regardless of what your containers are doing, they will at some point have to interact with the kernel via system calls.
+
+Capturing and analyzing eBPF or sysdig data allows for the creation of a container-aware monitoring system.
+
+Your monitoring tool should allow you to collect every metric with no filters and tag them automatically.
